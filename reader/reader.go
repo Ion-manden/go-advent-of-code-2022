@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"log"
 	"os"
+	"strings"
 )
 
 func CreateReaderFromFile(filePath string) *bufio.Reader {
@@ -13,4 +14,8 @@ func CreateReaderFromFile(filePath string) *bufio.Reader {
 	}
 
 	return bufio.NewReader(f)
+}
+
+func CreateReaderFromString(input string) *bufio.Reader {
+	return bufio.NewReader(strings.NewReader(input))
 }
