@@ -2,6 +2,7 @@ package main
 
 import (
 	"advent-of-code/day1"
+	"advent-of-code/day10"
 	"advent-of-code/day2"
 	"advent-of-code/day3"
 	"advent-of-code/day4"
@@ -33,4 +34,7 @@ func main() {
 	log.Println("Day 8 Part 2:", day8.Day8Part2(reader.CreateReaderFromFile("./day8/input.txt")))
 	log.Println("Day 9 Part 1:", day9.Day9Part1(reader.CreateReaderFromFile("./day9/input.txt")))
 	log.Println("Day 9 Part 2:", day9.Day9Part2(reader.CreateReaderFromFile("./day9/input.txt")))
+	log.Println("Day 10 Part 1:", day10.Day10Part1(reader.CreateReaderFromFile("./day10/input.txt")))
+	log.Println("Day 10 Part 2:")
+	day10.Day10Part2(reader.CreateReaderFromFile("./day10/input.txt"))
 }
