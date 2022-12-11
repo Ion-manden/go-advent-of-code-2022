@@ -59,8 +59,6 @@ func Day10Part1(r *bufio.Reader) int {
 }
 
 func getPixelForCycle(clockCycle int, x int) string {
-	log.Println("clockCycle: ", clockCycle)
-	log.Println("x: ", x)
 	if (clockCycle%40)-2 <= x && clockCycle%40 >= x {
 		return "#"
 	}
