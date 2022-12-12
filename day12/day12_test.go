@@ -15,13 +15,13 @@ func TestDay12Part1(t *testing.T) {
 		t.Fail()
 	}
 
-	// expect = 62491
-	// got = Day12Part1(reader.CreateReaderFromFile("./input.txt"))
-	// if got != expect {
-	// 	log.Println("got: ", got)
-	// 	log.Println("expect: ", expect)
-	// 	t.Fail()
-	// }
+	expect = 352
+	got = Day12Part1(reader.CreateReaderFromFile("./input.txt"))
+	if got != expect {
+		log.Println("got: ", got)
+		log.Println("expect: ", expect)
+		t.Fail()
+	}
 }
 
 func TestDay12Part2(t *testing.T) {

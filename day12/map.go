@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math"
 	"strings"
 )
 
@@ -14,6 +15,13 @@ type node struct {
 	li int
 	// Node index
 	ni int
+}
+
+func getLengthToEnd(n node, end node) int {
+	liCost := math.Abs(float64(n.li - end.li))
+	niCost := math.Abs(float64(n.ni - end.ni))
+
+	return int(liCost + niCost)
 }
 
 func getNodeHeight(node string) int {
@@ -74,9 +82,40 @@ func findEndInMatrix(matrix [][]string) node {
 	return node{}
 }
 
+func getPosibleTouchingNodes(currentNode node, matrix [][]string) []node {
+	adjacentNodes := []node{}
+	if currentNode.li > 0 {
+		char := matrix[currentNode.li-1][currentNode.ni]
+		adjacentNodes = append(adjacentNodes, node{char: char, li: currentNode.li - 1, ni: currentNode.ni})
+	}
+	if currentNode.li < len(matrix)-1 {
+		char := matrix[currentNode.li+1][currentNode.ni]
+		adjacentNodes = append(adjacentNodes, node{char: char, li: currentNode.li + 1, ni: currentNode.ni})
+	}
+
+	if currentNode.ni > 0 {
+		char := matrix[currentNode.li][currentNode.ni-1]
+		adjacentNodes = append(adjacentNodes, node{char: char, li: currentNode.li, ni: currentNode.ni - 1})
+	}
+	if currentNode.ni < len(matrix[0])-1 {
+		char := matrix[currentNode.li][currentNode.ni+1]
+		adjacentNodes = append(adjacentNodes, node{char: char, li: currentNode.li, ni: currentNode.ni + 1})
+	}
+
+	currentnodeHeight := getNodeHeight(currentNode.char)
+	heightFilteredNodes := []node{}
+	for _, n := range adjacentNodes {
+		nHeight := getNodeHeight(n.char)
+		if currentnodeHeight+1 >= nHeight {
+			heightFilteredNodes = append(heightFilteredNodes, n)
+		}
+	}
+
+	return heightFilteredNodes
+}
+
 // Returns steps it took to get to end
 func traverseNode(currentNode node, matrix [][]string, nodesTried []string) []int {
-	log.Printf("%+v\n", currentNode)
 	nodesTried = append(nodesTried, fmt.Sprint(currentNode.li, ":", currentNode.ni))
 	possibleNextNodes := []node{}
 
