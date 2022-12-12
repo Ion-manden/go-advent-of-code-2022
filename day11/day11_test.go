@@ -34,10 +34,10 @@ func TestDay11Part2(t *testing.T) {
 	}
 
 	expect = 17408399184
-	 got = Day11Part2(reader.CreateReaderFromFile("./input.txt"))
-	 if got != expect {
-	log.Println("got: ", got)
-	log.Println("expect: ", expect)
-	   t.Fail()
-	 }
+	got = Day11Part2(reader.CreateReaderFromFile("./input.txt"))
+	if got != expect {
+		log.Println("got: ", got)
+		log.Println("expect: ", expect)
+		t.Fail()
+	}
 }

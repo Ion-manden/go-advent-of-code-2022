@@ -14,9 +14,9 @@ func simulateMonkies(monkies []monkey, rounds int, divider int, useDividerAsMod 
 				worry := m.getWorryWhenHolding(item)
 
 				if useDividerAsMod {
-          worry = worry%divider
+					worry = worry % divider
 				} else {
-          worry = int(math.Floor(float64(worry) / float64(divider)))
+					worry = int(math.Floor(float64(worry) / float64(divider)))
 				}
 
 				if m.doesItemWorryPassTest(worry) {
