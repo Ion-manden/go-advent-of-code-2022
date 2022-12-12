@@ -2,6 +2,7 @@ package day12
 
 import (
 	"bufio"
+	"container/heap"
 	"fmt"
 	"io"
 	"log"
@@ -82,7 +83,7 @@ func findEndInMatrix(matrix [][]string) node {
 	return node{}
 }
 
-func getPosibleTouchingNodes(currentNode node, matrix [][]string) []node {
+func getPosibleTouchingNodes(currentNode node, matrix [][]string, runningReverse bool) []node {
 	adjacentNodes := []node{}
 	if currentNode.li > 0 {
 		char := matrix[currentNode.li-1][currentNode.ni]
@@ -106,8 +107,14 @@ func getPosibleTouchingNodes(currentNode node, matrix [][]string) []node {
 	heightFilteredNodes := []node{}
 	for _, n := range adjacentNodes {
 		nHeight := getNodeHeight(n.char)
-		if currentnodeHeight+1 >= nHeight {
-			heightFilteredNodes = append(heightFilteredNodes, n)
+		if runningReverse {
+			if currentnodeHeight+1 >= nHeight && currentnodeHeight-1 <= nHeight {
+				heightFilteredNodes = append(heightFilteredNodes, n)
+			}
+		} else {
+			if currentnodeHeight+1 >= nHeight {
+				heightFilteredNodes = append(heightFilteredNodes, n)
+			}
 		}
 	}
 
@@ -115,53 +122,57 @@ func getPosibleTouchingNodes(currentNode node, matrix [][]string) []node {
 }
 
 // Returns steps it took to get to end
-func traverseNode(currentNode node, matrix [][]string, nodesTried []string) []int {
-	nodesTried = append(nodesTried, fmt.Sprint(currentNode.li, ":", currentNode.ni))
-	possibleNextNodes := []node{}
-
-	if currentNode.li > 0 {
-		char := matrix[currentNode.li-1][currentNode.ni]
-		possibleNextNodes = append(possibleNextNodes, node{char: char, li: currentNode.li - 1, ni: currentNode.ni})
-	}
-	if currentNode.li < len(matrix)-1 {
-		char := matrix[currentNode.li+1][currentNode.ni]
-		possibleNextNodes = append(possibleNextNodes, node{char: char, li: currentNode.li + 1, ni: currentNode.ni})
-	}
-
-	if currentNode.ni > 0 {
-		char := matrix[currentNode.li][currentNode.ni-1]
-		possibleNextNodes = append(possibleNextNodes, node{char: char, li: currentNode.li, ni: currentNode.ni - 1})
-	}
-	if currentNode.ni < len(matrix[0])-1 {
-		char := matrix[currentNode.li][currentNode.ni+1]
-		possibleNextNodes = append(possibleNextNodes, node{char: char, li: currentNode.li, ni: currentNode.ni + 1})
-	}
-
-	currentnodeHeight := getNodeHeight(currentNode.char)
-	nodesTriedCounts := []int{}
+func traverseMatrix(startingNode node, endChar string, matrix [][]string, useLengthToEndInPriority bool, runningReverse bool) int {
 	endNode := findEndInMatrix(matrix)
 
-nodeLoop:
-	for _, n := range possibleNextNodes {
-		nHeight := getNodeHeight(n.char)
-		if currentnodeHeight+1 < nHeight || currentnodeHeight-1 > nHeight {
-			continue
+	// Create a priority queue, put the items in it, and
+	// establish the priority queue (heap) invariants.
+	pq := make(PriorityQueue, 1)
+	pq[0] = &Item{
+		value:    startingNode,
+		priority: 0,
+		index:    0,
+	}
+	heap.Init(&pq)
+
+	nodesTried := []string{}
+	// Take the items out; they arrive in decreasing priority order.
+	for pq.Len() > 0 {
+		item := heap.Pop(&pq).(*Item)
+		nKey := fmt.Sprint(item.value.li, ":", item.value.char, ":", item.value.ni)
+		nodesTried = append(nodesTried, nKey)
+		if item.value.char == endChar {
+			return item.pathCost
 		}
 
-		nKey := fmt.Sprint(n.li, ":", n.ni)
-		for _, seenNode := range nodesTried {
-			if nKey == seenNode {
-				continue nodeLoop
+		possibleNodes := getPosibleTouchingNodes(item.value, matrix, runningReverse)
+
+	nodeLoop:
+		for _, n := range possibleNodes {
+			nKey := fmt.Sprint(n.li, ":", n.char, ":", n.ni)
+			for _, seenNode := range nodesTried {
+				if nKey == seenNode {
+					continue nodeLoop
+				}
 			}
-		}
 
-		if n == endNode {
-			nodesTriedCounts = append(nodesTriedCounts, len(nodesTried))
+			lengthToEnd := 0
+			pathCost := item.pathCost + 1
+			priority := pathCost
+			if useLengthToEndInPriority {
+				lengthToEnd = getLengthToEnd(n, endNode)
+				priority += lengthToEnd
+			}
+			// Insert a new item and then modify its priority.
+			item := &Item{
+				value:       n,
+				pathCost:    pathCost,
+				lengthToEnd: lengthToEnd,
+				priority:    priority,
+			}
+			heap.Push(&pq, item)
 		}
-
-		ntraversedCounts := traverseNode(n, matrix, nodesTried)
-		nodesTriedCounts = append(nodesTriedCounts, ntraversedCounts...)
 	}
 
-	return nodesTriedCounts
+	return 0
 }
