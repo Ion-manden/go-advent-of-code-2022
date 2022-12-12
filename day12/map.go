@@ -108,7 +108,7 @@ func getPosibleTouchingNodes(currentNode node, matrix [][]string, runningReverse
 	for _, n := range adjacentNodes {
 		nHeight := getNodeHeight(n.char)
 		if runningReverse {
-			if currentnodeHeight+1 >= nHeight && currentnodeHeight-1 <= nHeight {
+			if currentnodeHeight-1 <= nHeight {
 				heightFilteredNodes = append(heightFilteredNodes, n)
 			}
 		} else {
@@ -135,12 +135,16 @@ func traverseMatrix(startingNode node, endChar string, matrix [][]string, useLen
 	}
 	heap.Init(&pq)
 
-	nodesTried := []string{}
+	nodesTried := map[string]bool{}
 	// Take the items out; they arrive in decreasing priority order.
 	for pq.Len() > 0 {
 		item := heap.Pop(&pq).(*Item)
-		nKey := fmt.Sprint(item.value.li, ":", item.value.char, ":", item.value.ni)
-		nodesTried = append(nodesTried, nKey)
+		k := fmt.Sprint(item.value.li, ":", item.value.char, ":", item.value.ni)
+		_, ok := nodesTried[k]
+		if ok {
+			continue
+		}
+		nodesTried[k] = true
 		if item.value.char == endChar {
 			return item.pathCost
 		}
@@ -150,10 +154,9 @@ func traverseMatrix(startingNode node, endChar string, matrix [][]string, useLen
 	nodeLoop:
 		for _, n := range possibleNodes {
 			nKey := fmt.Sprint(n.li, ":", n.char, ":", n.ni)
-			for _, seenNode := range nodesTried {
-				if nKey == seenNode {
-					continue nodeLoop
-				}
+			_, ok := nodesTried[nKey]
+			if ok {
+				continue nodeLoop
 			}
 
 			lengthToEnd := 0
@@ -164,13 +167,13 @@ func traverseMatrix(startingNode node, endChar string, matrix [][]string, useLen
 				priority += lengthToEnd
 			}
 			// Insert a new item and then modify its priority.
-			item := &Item{
+			it := &Item{
 				value:       n,
 				pathCost:    pathCost,
 				lengthToEnd: lengthToEnd,
 				priority:    priority,
 			}
-			heap.Push(&pq, item)
+			heap.Push(&pq, it)
 		}
 	}
 
