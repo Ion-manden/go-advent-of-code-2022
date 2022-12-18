@@ -50,5 +50,5 @@ func main() {
 	log.Println("Day 14 Part 1:", day14.Day14Part1(reader.CreateReaderFromFile("./day14/input.txt")))
 	log.Println("Day 14 Part 2:", day14.Day14Part2(reader.CreateReaderFromFile("./day14/input.txt")))
 	log.Println("Day 15 Part 1:", day15.Day15Part1(reader.CreateReaderFromFile("./day15/input.txt"), 2000000))
-	log.Println("Day 15 Part 2:", day15.Day15Part2(reader.CreateReaderFromFile("./day15/input.txt")))
+	log.Println("Day 15 Part 2:", day15.Day15Part2(reader.CreateReaderFromFile("./day15/input.txt"), 4000000))
 }

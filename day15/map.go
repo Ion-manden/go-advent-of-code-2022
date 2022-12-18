@@ -92,18 +92,13 @@ func getXMinMaxCoverage(sbPairs []sensorBeaconPair) (int, int) {
 	max := 0
 
 	for _, sbPair := range sbPairs {
-		if sbPair.sensor.X < min {
-			min = sbPair.sensor.X
+    sReachLeft := sbPair.sensor.X - sbPair.distance()
+		if sReachLeft < min {
+			min = sReachLeft
 		}
-		if sbPair.sensor.X > max {
-			max = sbPair.sensor.X
-		}
-
-		if sbPair.beacon.X < min {
-			min = sbPair.beacon.X
-		}
-		if sbPair.beacon.X > max {
-			max = sbPair.beacon.X
+    sReachRight := sbPair.sensor.X + sbPair.distance()
+		if sReachRight > max {
+			max = sReachRight
 		}
 	}
 
