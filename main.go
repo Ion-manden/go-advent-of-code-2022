@@ -8,6 +8,7 @@ import (
 
 	"advent-of-code/day14"
 	"advent-of-code/day15"
+	"advent-of-code/day16"
 	"advent-of-code/day2"
 	"advent-of-code/day3"
 	"advent-of-code/day4"
@@ -51,4 +52,6 @@ func main() {
 	log.Println("Day 14 Part 2:", day14.Day14Part2(reader.CreateReaderFromFile("./day14/input.txt")))
 	log.Println("Day 15 Part 1:", day15.Day15Part1(reader.CreateReaderFromFile("./day15/input.txt"), 2000000))
 	log.Println("Day 15 Part 2:", day15.Day15Part2(reader.CreateReaderFromFile("./day15/input.txt"), 4000000))
+	log.Println("Day 16 Part 1:", day16.Day16Part1(reader.CreateReaderFromFile("./day16/input.txt")))
+	log.Println("Day 16 Part 2:", day16.Day16Part2(reader.CreateReaderFromFile("./day16/input.txt")))
 }
